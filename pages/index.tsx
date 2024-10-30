@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Login from '@/components/Login';
+import { auth } from "../lib/firebase";
+import { onAuthStateChanged, User } from "firebase/auth";
+import UserStatus from "../components/UserStatus";
 
 interface Post {
   _id: string;
@@ -10,6 +14,7 @@ interface Post {
 
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   // Fetch posts from the API
@@ -28,8 +33,17 @@ export default function Home() {
     fetchPosts();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+
   return (
     <div className="p-8">
+      {user ? <UserStatus /> : <a href='/login'>Faça Login </a>}
       <h1 className="text-2xl font-bold mb-4">Posts</h1>
       <button
         className="bg-blue-500 text-white px-4 py-2 mb-4"
