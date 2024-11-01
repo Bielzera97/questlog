@@ -1,4 +1,4 @@
-// components/Login.tsx
+
 import { auth } from "../lib/firebase";
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
